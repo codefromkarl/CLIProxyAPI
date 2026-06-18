@@ -23,8 +23,8 @@ import (
 const defaultAPICallTimeout = 60 * time.Second
 
 const (
-	geminiOAuthClientID     = "681255809395-oo8ft2oprdrnp9e3aqf6av3hmdib135j.apps.googleusercontent.com"
-	geminiOAuthClientSecret = "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"
+	geminiOAuthClientID     = "YOUR_GOOGLE_CLIENT_ID_1"
+	geminiOAuthClientSecret = "YOUR_GOOGLE_CLIENT_SECRET_1"
 )
 
 var geminiOAuthScopes = []string{
@@ -34,8 +34,8 @@ var geminiOAuthScopes = []string{
 }
 
 const (
-	antigravityOAuthClientID     = "1071006060591-tmhssin2h21lcre235vtolojh4g403ep.apps.googleusercontent.com"
-	antigravityOAuthClientSecret = "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"
+	antigravityOAuthClientID     = "YOUR_GOOGLE_CLIENT_ID_2"
+	antigravityOAuthClientSecret = "YOUR_GOOGLE_CLIENT_SECRET_2"
 )
 
 var antigravityOAuthTokenURL = "https://oauth2.googleapis.com/token"

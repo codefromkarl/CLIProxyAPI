@@ -3,8 +3,8 @@ package antigravity
 
 // OAuth client credentials and configuration
 const (
-	ClientID     = "1071006060591-tmhssin2h21lcre235vtolojh4g403ep.apps.googleusercontent.com"
-	ClientSecret = "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"
+	ClientID     = "YOUR_GOOGLE_CLIENT_ID_2"
+	ClientSecret = "YOUR_GOOGLE_CLIENT_SECRET_2"
 	CallbackPort = 51121
 )
 

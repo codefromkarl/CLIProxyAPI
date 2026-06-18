@@ -28,8 +28,8 @@ import (
 
 // OAuth configuration constants for Gemini
 const (
-	ClientID            = "681255809395-oo8ft2oprdrnp9e3aqf6av3hmdib135j.apps.googleusercontent.com"
-	ClientSecret        = "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"
+	ClientID            = "YOUR_GOOGLE_CLIENT_ID_1"
+	ClientSecret        = "YOUR_GOOGLE_CLIENT_SECRET_1"
 	DefaultCallbackPort = 8085
 )
 
