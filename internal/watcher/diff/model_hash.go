@@ -21,7 +21,11 @@ func ComputeOpenAICompatModelsHash(models []config.OpenAICompatibilityModel) str
 			if name == "" && alias == "" {
 				continue
 			}
-			out(strings.ToLower(name) + "|" + strings.ToLower(alias) + "|" + fmt.Sprintf("image=%t", model.Image))
+			ctx := ""
+			if model.ContextLength > 0 {
+				ctx = fmt.Sprintf("|ctx=%d", model.ContextLength)
+			}
+			out(strings.ToLower(name) + "|" + strings.ToLower(alias) + "|" + fmt.Sprintf("image=%t", model.Image) + ctx)
 		}
 	})
 	return hashJoined(keys)

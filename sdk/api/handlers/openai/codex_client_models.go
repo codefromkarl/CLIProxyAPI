@@ -139,6 +139,9 @@ func applyCodexClientModelMetadata(entry map[string]any, id string, model map[st
 	if contextWindow > 0 {
 		entry["context_window"] = contextWindow
 		entry["max_context_window"] = contextWindow
+	} else {
+		delete(entry, "context_window")
+		delete(entry, "max_context_window")
 	}
 
 	if baseInstructions := stringModelValue(model, "base_instructions"); baseInstructions != "" {

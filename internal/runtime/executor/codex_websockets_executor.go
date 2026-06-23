@@ -1669,11 +1669,10 @@ func CloseCodexWebsocketSessionsForAuthID(authID string, reason string) {
 	}
 }
 
-// CodexAutoExecutor routes Codex requests to the websocket transport only when:
-//  1. The downstream transport is websocket, and
-//  2. The selected auth enables websockets.
-//
-// For non-websocket downstream requests, it always uses the legacy HTTP implementation.
+// CodexAutoExecutor routes Codex requests to the websocket transport when the
+// selected auth enables websockets. The downstream client may still use HTTP/SSE;
+// this executor keeps that local API stable while using the upstream websocket
+// channel for Codex requests.
 type CodexAutoExecutor struct {
 	httpExec *CodexExecutor
 	wsExec   *CodexWebsocketsExecutor
@@ -1706,7 +1705,7 @@ func (e *CodexAutoExecutor) Execute(ctx context.Context, auth *cliproxyauth.Auth
 	if e == nil || e.httpExec == nil || e.wsExec == nil {
 		return cliproxyexecutor.Response{}, fmt.Errorf("codex auto executor: executor is nil")
 	}
-	if cliproxyexecutor.DownstreamWebsocket(ctx) && codexWebsocketsEnabled(auth) {
+	if codexWebsocketsEnabled(auth) {
 		return e.wsExec.Execute(ctx, auth, req, opts)
 	}
 	return e.httpExec.Execute(ctx, auth, req, opts)
@@ -1716,7 +1715,7 @@ func (e *CodexAutoExecutor) ExecuteStream(ctx context.Context, auth *cliproxyaut
 	if e == nil || e.httpExec == nil || e.wsExec == nil {
 		return nil, fmt.Errorf("codex auto executor: executor is nil")
 	}
-	if cliproxyexecutor.DownstreamWebsocket(ctx) && codexWebsocketsEnabled(auth) {
+	if codexWebsocketsEnabled(auth) {
 		return e.wsExec.ExecuteStream(ctx, auth, req, opts)
 	}
 	return e.httpExec.ExecuteStream(ctx, auth, req, opts)

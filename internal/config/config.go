@@ -624,6 +624,11 @@ type OpenAICompatibilityModel struct {
 	// Alias is the model name alias that clients will use to reference this model.
 	Alias string `yaml:"alias" json:"alias"`
 
+	// ContextLength is the maximum context window size in tokens.
+	// When set, the proxy reports this value as context_window in the model list.
+	// If unset (0), no context_window is reported and the client uses its own default.
+	ContextLength int `yaml:"context-length,omitempty" json:"context_length,omitempty"`
+
 	// Image marks this model as callable through /v1/images/generations and /v1/images/edits.
 	Image bool `yaml:"image,omitempty" json:"image,omitempty"`
 

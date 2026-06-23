@@ -2231,16 +2231,22 @@ func buildOpenAICompatibilityConfigModels(compat *config.OpenAICompatibility) []
 		return nil
 	}
 	now := time.Now().Unix()
-	models := make([]*ModelInfo, 0, len(compat.Models))
-	for i := range compat.Models {
-		model := compat.Models[i]
-		modelID := strings.TrimSpace(model.Alias)
-		if modelID == "" {
-			modelID = strings.TrimSpace(model.Name)
+	providerName := strings.TrimSpace(compat.Name)
+	providerPrefix := strings.ToLower(providerName)
+	models := make([]*ModelInfo, 0, len(compat.Models)*2)
+	seen := make(map[string]struct{}, len(compat.Models)*2)
+
+	appendModel := func(id string, model config.OpenAICompatibilityModel) {
+		id = strings.TrimSpace(id)
+		if id == "" {
+			return
 		}
-		if modelID == "" {
-			continue
+		key := strings.ToLower(id)
+		if _, ok := seen[key]; ok {
+			return
 		}
+		seen[key] = struct{}{}
+
 		modelType := "openai-compatibility"
 		if model.Image {
 			modelType = registry.OpenAIImageModelType
@@ -2250,15 +2256,34 @@ func buildOpenAICompatibilityConfigModels(compat *config.OpenAICompatibility) []
 			thinking = &registry.ThinkingSupport{Levels: []string{"low", "medium", "high"}}
 		}
 		models = append(models, &ModelInfo{
-			ID:          modelID,
-			Object:      "model",
-			Created:     now,
-			OwnedBy:     compat.Name,
-			Type:        modelType,
-			DisplayName: modelID,
-			UserDefined: false,
-			Thinking:    thinking,
+			ID:            id,
+			Object:        "model",
+			Created:       now,
+			OwnedBy:       providerName,
+			Type:          modelType,
+			DisplayName:   id,
+			UserDefined:   true,
+			ContextLength: model.ContextLength,
+			Thinking:      thinking,
 		})
+	}
+
+	for i := range compat.Models {
+		model := compat.Models[i]
+		alias := strings.TrimSpace(model.Alias)
+		modelName := strings.TrimSpace(model.Name)
+		switch {
+		case alias == "" && modelName != "":
+			appendModel(modelName, model)
+		case alias != "" && modelName == "":
+			appendModel(providerPrefix+"/"+alias, model)
+		case alias != "" && modelName != "":
+			appendModel(modelName, model)
+			qualifiedID := providerPrefix + "/" + alias
+			if !strings.EqualFold(qualifiedID, modelName) {
+				appendModel(qualifiedID, model)
+			}
+		}
 	}
 	return models
 }
